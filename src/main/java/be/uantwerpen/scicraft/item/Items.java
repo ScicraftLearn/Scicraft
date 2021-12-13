@@ -24,6 +24,9 @@ public class Items {
     public static final Item PION_NUL = register(new BlockItem(Blocks.PION_NUL, new FabricItemSettings().group(ItemGroups.ELEMENTARY_PARTICLES)), "pion_nul");
     public static final Item PION_MINUS = register(new BlockItem(Blocks.PION_MINUS, new FabricItemSettings().group(ItemGroups.ELEMENTARY_PARTICLES)), "pion_minus");
     public static final Item PION_PLUS = register(new BlockItem(Blocks.PION_PLUS, new FabricItemSettings().group(ItemGroups.ELEMENTARY_PARTICLES)), "pion_plus");
+  
+    public static final Item SCHRODINGERS_BOX = register(new BlockItem(Blocks.SCHRODINGERS_BOX, new FabricItemSettings().group(ItemGroups.QUANTUM_FIELDS)), "schrodingers_box");
+
 
     /**
      * Register an Item

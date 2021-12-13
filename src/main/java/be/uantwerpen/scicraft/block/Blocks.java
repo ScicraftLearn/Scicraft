@@ -9,13 +9,14 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class Blocks {
-
     public static final Block PION_NUL = register(new PionBlock(FabricBlockSettings.of(Material.WOOL)
             .mapColor(MapColor.WHITE).strength(2f).nonOpaque().collidable(false)), "pion_nul");
     public static final Block PION_MINUS = register(new PionBlock(FabricBlockSettings.of(Material.WOOL)
             .mapColor(MapColor.WHITE).strength(2f).nonOpaque().collidable(false)), "pion_minus");
     public static final Block PION_PLUS = register(new PionBlock(FabricBlockSettings.of(Material.WOOL)
             .mapColor(MapColor.WHITE).strength(2f).nonOpaque().collidable(false)), "pion_plus");
+  
+    public static final Block SCHRODINGERS_BOX = register(new SchrodingersBox(), "schrodingers_box");
 
     /**
      * Register a Block

@@ -25,6 +25,8 @@ public class Items {
     public static final Item PION_MINUS = register(new BlockItem(Blocks.PION_MINUS, new FabricItemSettings().group(ItemGroups.ELEMENTARY_PARTICLES)), "pion_minus");
     public static final Item PION_PLUS = register(new BlockItem(Blocks.PION_PLUS, new FabricItemSettings().group(ItemGroups.ELEMENTARY_PARTICLES)), "pion_plus");
 
+    public static final Item SHRODINGER_CHEST = register(new BlockItem(Blocks.SCHRODINGER_CHEST, new FabricItemSettings().group(ItemGroup.MISC)), "schrodingers_box");
+
     /**
      * Register an Item
      *

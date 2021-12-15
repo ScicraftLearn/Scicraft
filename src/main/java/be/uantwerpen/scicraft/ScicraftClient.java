@@ -1,13 +1,14 @@
 package be.uantwerpen.scicraft;
 
 import be.uantwerpen.scicraft.block.Blocks;
+import be.uantwerpen.scicraft.block.MyChestBlockEntity;
 import be.uantwerpen.scicraft.entity.Entities;
 import be.uantwerpen.scicraft.renderer.EntropyCreeperEntityRenderer;
-
+import be.uantwerpen.scicraft.renderer.MyChestBlockEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
 
@@ -25,5 +26,13 @@ public class ScicraftClient implements ClientModInitializer {
         EntityRendererRegistry.register(Entities.PROTON_ENTITY, FlyingItemEntityRenderer::new);
         EntityRendererRegistry.register(Entities.NEUTRON_ENTITY, FlyingItemEntityRenderer::new);
         EntityRendererRegistry.register(Entities.ENTROPY_CREEPER, EntropyCreeperEntityRenderer::new);
+
+        BlockEntityRendererRegistry.register(Entities.MY_CHEST, MyChestBlockEntityRenderer<MyChestBlockEntity>::new);
+
+//        ClientSpriteRegistryCallback.event(TexturedRenderLayers.CHEST_ATLAS_TEXTURE).register((texture, registry) -> {
+//            registry.register(new Identifier(Scicraft.MOD_ID, "entity/chest/normal"));
+//        });
+
+
     }
 }

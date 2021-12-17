@@ -1,10 +1,11 @@
 package be.uantwerpen.scicraft.block;
 
 import be.uantwerpen.scicraft.Scicraft;
-import be.uantwerpen.scicraft.entity.Entities;
+import be.uantwerpen.scicraft.block.blockentity.BlockEntityTypes;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.Block;
+import net.minecraft.block.MapColor;
+import net.minecraft.block.Material;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -18,7 +19,7 @@ public class Blocks {
     public static final Block PION_PLUS = register(new PionBlock(FabricBlockSettings.of(Material.WOOL)
             .mapColor(MapColor.WHITE).strength(2f).nonOpaque().collidable(false)), "pion_plus");
 
-    public static final Block SCHRODINGER_CHEST = register(new SchrodingerChestBlock(FabricBlockSettings.of(Material.WOOD).strength(2.5f).sounds(BlockSoundGroup.WOOD), () -> Entities.MY_CHEST), "schrodingers_box");
+    public static final Block SCHRODINGER_CHEST = register(new SchrodingerChestBlock(FabricBlockSettings.of(Material.WOOD).strength(2.5f).sounds(BlockSoundGroup.WOOD), () -> BlockEntityTypes.SCHRODINGER_CHEST), "schrodingers_box");
 
 
     /**

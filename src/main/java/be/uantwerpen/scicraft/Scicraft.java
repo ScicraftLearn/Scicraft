@@ -1,6 +1,7 @@
 package be.uantwerpen.scicraft;
 
 import be.uantwerpen.scicraft.block.Blocks;
+import be.uantwerpen.scicraft.block.blockentity.BlockEntityTypes;
 import be.uantwerpen.scicraft.entity.Entities;
 import be.uantwerpen.scicraft.item.Items;
 import net.fabricmc.api.ModInitializer;
@@ -22,6 +23,7 @@ public class Scicraft implements ModInitializer {
         Items.registerItems();
         Blocks.registerBlocks();
         Entities.registerEntities();
+        BlockEntityTypes.registerBlockEntityTypes();
         ExtraDispenserBehavior.registerBehaviors();
     }
 }

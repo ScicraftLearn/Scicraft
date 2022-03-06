@@ -1,0 +1,11 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "down": "scicraft:block/natrium",
+        "up": "scicraft:block/natrium",
+        "north": "scicraft:block/natrium",
+        "east": "scicraft:block/natrium",
+        "south": "scicraft:block/natrium",
+        "west": "scicraft:block/natrium"
+    }
+}

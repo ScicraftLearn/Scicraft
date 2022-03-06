@@ -1,0 +1,11 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "down": "scicraft:block/NaCl_salt",
+        "up": "scicraft:block/NaCl_salt",
+        "north": "scicraft:block/NaCl_salt",
+        "east": "scicraft:block/NaCl_salt",
+        "south": "scicraft:block/NaCl_salt",
+        "west": "scicraft:block/NaCl_salt"
+    }
+}

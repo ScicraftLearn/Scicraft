@@ -1,0 +1,11 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "down": "scicraft:block/NaOH",
+        "up": "scicraft:block/NaOH",
+        "north": "scicraft:block/NaOH",
+        "east": "scicraft:block/NaOH",
+        "south": "scicraft:block/NaOH",
+        "west": "scicraft:block/NaOH"
+    }
+}

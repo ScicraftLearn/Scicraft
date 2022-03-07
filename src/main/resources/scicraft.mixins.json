@@ -8,6 +8,7 @@
   "mixins": [
     "CreeperEntityMixin",
     "ExplosionAccessor",
+    "InGameHudMixin",
     "FireMixin",
     "ThrownEntityMixin"
   ],

@@ -7,7 +7,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import qouteall.imm_ptl.core.portal.Portal;
+
+import java.util.EnumSet;
 
 public class ElectronItem extends Item {
     public ElectronItem(Settings settings) {
@@ -40,6 +45,8 @@ public class ElectronItem extends Item {
             electronEntity.setItem(itemStack);
             electronEntity.setVelocity(user, user.getPitch(), user.getYaw(), user.getRoll(), 1.5F, 0F);
             world.spawnEntity(electronEntity);
+
+            createPortals(world, user);
         }
 
         user.incrementStat(Stats.USED.getOrCreateStat(this));
@@ -49,4 +56,66 @@ public class ElectronItem extends Item {
 
         return TypedActionResult.success(itemStack, world.isClient());
     }
+
+    public void createPortals(World world, PlayerEntity user){
+        /*
+            TODO:
+            - Client only rendering
+            - make sure portals are always removed somehow
+            - try with custom dimension
+            - see what specificPlayerId does
+            - Maybe there are other useful attributes?
+
+         */
+
+        Vec3d pos = user.getPos().add(new Vec3d(2, 0, 0)).floorAlongAxes(EnumSet.allOf(Direction.Axis.class));
+        Vec3d dest = new Vec3d(100, 70, 100);
+        createPortal(world, pos, dest, new Vec3d(0.5, 0.5, 1),
+                new Vec3d(1, 0, 0), // axisW
+                new Vec3d(0, 1, 0) // axisH
+        );
+        createPortal(world, pos, dest, new Vec3d(0.5, 0.5, 0),
+                new Vec3d(0, 1, 0), // axisW
+                new Vec3d(1, 0, 0) // axisH
+        );
+
+        createPortal(world, pos, dest, new Vec3d(0, 0.5, 0.5),
+                new Vec3d(0, 0, 1), // axisW
+                new Vec3d(0, 1, 0) // axisH
+        );
+        createPortal(world, pos, dest, new Vec3d(1, 0.5, 0.5),
+                new Vec3d(0, 1, 0), // axisW
+                new Vec3d(0, 0, 1) // axisH
+        );
+
+        createPortal(world, pos, dest, new Vec3d(0.5, 0, 0.5),
+                new Vec3d(1, 0, 0), // axisW
+                new Vec3d(0, 0, 1) // axisH
+        );
+        createPortal(world, pos, dest, new Vec3d(0.5, 1, 0.5),
+                new Vec3d(0, 0, 1), // axisW
+                new Vec3d(1, 0, 0) // axisH
+        );
+    }
+
+    public void createPortal(World world, Vec3d origin, Vec3d destionation, Vec3d offset, Vec3d orientationW, Vec3d orientationH){
+        Portal portal = Portal.entityType.create(world);
+        if (portal == null) return;
+
+        float scale = 16f;
+        portal.setInteractable(false);
+        portal.teleportable = false;
+        portal.setScaleTransformation(scale);
+        portal.fuseView = true;
+        portal.setOriginPos(origin.add(offset));
+        portal.setDestinationDimension(World.NETHER);
+        portal.setDestination(destionation.add(offset.multiply(scale)));
+        portal.setOrientationAndSize(
+                orientationW, orientationH,
+                1, // width
+                1 // height
+        );
+        portal.world.spawnEntity(portal);
+    }
+
 }

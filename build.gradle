@@ -20,6 +20,9 @@ repositories {
 		name = "WTHIT"
 		url = "https://maven.bai.lol"
 	}
+
+	// immersive portals
+	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -32,6 +35,18 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	modCompileOnly "mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}"
+
+	// Dependency of Immersive Portals Core:
+	modImplementation ("com.github.qouteall.ImmersivePortalsMod:imm_ptl_core:v${project.immersive_portals_api_version}"){
+		exclude(group: "net.fabricmc.fabric-api")
+		transitive(false)
+	}
+
+	// Dependency of the Miscellaneous Utility Library from qouteall
+	modImplementation ("com.github.qouteall.ImmersivePortalsMod:q_misc_util:v${project.immersive_portals_api_version}"){
+		exclude(group: "net.fabricmc.fabric-api")
+		transitive(false)
+	}
 }
 
 processResources {

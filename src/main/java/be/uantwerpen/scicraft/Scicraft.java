@@ -1,6 +1,7 @@
 package be.uantwerpen.scicraft;
 
 import be.uantwerpen.scicraft.block.Blocks;
+import be.uantwerpen.scicraft.dimension.CustomDimension;
 import be.uantwerpen.scicraft.entity.Entities;
 import be.uantwerpen.scicraft.item.Items;
 import be.uantwerpen.scicraft.paintings.Paintings;
@@ -17,6 +18,8 @@ public class Scicraft implements ModInitializer {
     // This logger is used to write text to the console and the log file.
     public static final Logger LOGGER = LogManager.getLogger("scicraft");
 
+    public static final CustomDimension DIMENSION = new CustomDimension();
+
     @Override
     public void onInitialize() {
         LOGGER.info("Hello Scicraft world!");
@@ -25,6 +28,7 @@ public class Scicraft implements ModInitializer {
         Blocks.registerBlocks();
         Entities.registerEntities();
         ExtraDispenserBehavior.registerBehaviors();
+        DIMENSION.onInitialize();
         SoundEvents.registerSounds();
         Paintings.registerPaintings();
     }

@@ -1,5 +1,7 @@
 package be.uantwerpen.scicraft.item;
 
+import be.uantwerpen.scicraft.Scicraft;
+import be.uantwerpen.scicraft.dimension.CustomDimension;
 import be.uantwerpen.scicraft.entity.ElectronEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -58,18 +60,8 @@ public class ElectronItem extends Item {
     }
 
     public void createPortals(World world, PlayerEntity user){
-        /*
-            TODO:
-            - Client only rendering
-            - make sure portals are always removed somehow
-            - try with custom dimension
-            - see what specificPlayerId does
-            - Maybe there are other useful attributes?
-
-         */
-
         Vec3d pos = user.getPos().add(new Vec3d(2, 0, 0)).floorAlongAxes(EnumSet.allOf(Direction.Axis.class));
-        Vec3d dest = new Vec3d(100, 70, 100);
+        Vec3d dest = new Vec3d(0, 0, 0);
         createPortal(world, pos, dest, new Vec3d(0.5, 0.5, 1),
                 new Vec3d(1, 0, 0), // axisW
                 new Vec3d(0, 1, 0) // axisH
@@ -98,18 +90,20 @@ public class ElectronItem extends Item {
         );
     }
 
-    public void createPortal(World world, Vec3d origin, Vec3d destionation, Vec3d offset, Vec3d orientationW, Vec3d orientationH){
+    public void createPortal(World world, Vec3d origin, Vec3d destination, Vec3d offset, Vec3d orientationW, Vec3d orientationH){
         Portal portal = Portal.entityType.create(world);
         if (portal == null) return;
 
-        float scale = 16f;
+        float scale = 15f;
         portal.setInteractable(false);
         portal.teleportable = false;
+        portal.hasCrossPortalCollision = false;
         portal.setScaleTransformation(scale);
+        portal.renderingMergable = false;       // TODO: figure out if this helps at all
         portal.fuseView = true;
         portal.setOriginPos(origin.add(offset));
-        portal.setDestinationDimension(World.NETHER);
-        portal.setDestination(destionation.add(offset.multiply(scale)));
+        portal.setDestinationDimension(CustomDimension.WORLD_KEY);
+        portal.setDestination(destination.add(offset.multiply(scale)));
         portal.setOrientationAndSize(
                 orientationW, orientationH,
                 1, // width

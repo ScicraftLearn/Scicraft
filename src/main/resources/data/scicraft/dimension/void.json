@@ -1,11 +1,11 @@
 {
   "generator": {
-    "type": "fabric_dimension:void",
+    "type": "scicraft:void",
     "custom_bool": true,
     "biome_source": {
       "type": "minecraft:fixed",
       "biome": "minecraft:plains"
     }
   },
-  "type": "fabric_dimension:void_type"
-}
+  "type": "scicraft:void_type"
+} 

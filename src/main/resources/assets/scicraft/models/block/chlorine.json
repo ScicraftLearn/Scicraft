@@ -1,0 +1,7 @@
+{
+    "parent": "block/cross",
+    "textures": {
+        "cross": "scicraft:item/atom_green",
+        "particle": "scicraft:item/atom_green"
+    }
+}

@@ -1,5 +1,6 @@
 package be.uantwerpen.scicraft.dimension;
 
+import be.uantwerpen.scicraft.Scicraft;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -14,23 +15,23 @@ public class CustomDimension {
     // which will always share it's ID with the world that is created from it
     private static final RegistryKey<DimensionOptions> DIMENSION_KEY = RegistryKey.of(
             Registry.DIMENSION_KEY,
-            new Identifier("fabric_dimension", "void")
+            new Identifier(Scicraft.MOD_ID, "void")
     );
 
-    private static RegistryKey<World> WORLD_KEY = RegistryKey.of(
+    public static RegistryKey<World> WORLD_KEY = RegistryKey.of(
             Registry.WORLD_KEY,
             DIMENSION_KEY.getValue()
     );
 
     private static final RegistryKey<DimensionType> DIMENSION_TYPE_KEY = RegistryKey.of(
             Registry.DIMENSION_TYPE_KEY,
-            new Identifier("fabric_dimension", "void_type")
+            new Identifier(Scicraft.MOD_ID, "void_type")
     );
 
     public void onInitialize() {
-        Registry.register(Registry.CHUNK_GENERATOR, new Identifier("fabric_dimension", "void"), VoidChunkGenerator.CODEC);
+        Registry.register(Registry.CHUNK_GENERATOR, new Identifier(Scicraft.MOD_ID, "void"), VoidChunkGenerator.CODEC);
 
-        WORLD_KEY = RegistryKey.of(Registry.WORLD_KEY, new Identifier("fabric_dimension", "void"));
+        WORLD_KEY = RegistryKey.of(Registry.WORLD_KEY, new Identifier(Scicraft.MOD_ID, "void"));
     }
 
     public static ServerWorld getModWorld(MinecraftServer server) {

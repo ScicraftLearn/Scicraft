@@ -9,12 +9,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import qouteall.imm_ptl.core.portal.Portal;
 
 import java.util.EnumSet;
+import java.util.List;
 
 public class ElectronItem extends Item {
     public ElectronItem(Settings settings) {
@@ -60,6 +62,14 @@ public class ElectronItem extends Item {
     }
 
     public void createPortals(World world, PlayerEntity user){
+
+        List<Portal> portals = world.getEntitiesByClass(Portal.class, Box.of(user.getPos(), 20, 20, 20), p -> true);
+        Scicraft.LOGGER.info(portals);
+        if (portals.size() != 0) {
+            scalePortals(portals);
+            return;
+        }
+
         Vec3d pos = user.getPos().add(new Vec3d(2, 0, 0)).floorAlongAxes(EnumSet.allOf(Direction.Axis.class));
         Vec3d dest = new Vec3d(0, 0, 0);
         createPortal(world, pos, dest, new Vec3d(0.5, 0.5, 1),
@@ -88,6 +98,13 @@ public class ElectronItem extends Item {
                 new Vec3d(0, 0, 1), // axisW
                 new Vec3d(1, 0, 0) // axisH
         );
+    }
+
+    public void scalePortals(List<Portal> portals){
+        for (Portal portal:portals) {
+            portal.setScaleTransformation(8);
+            portal.reloadAndSyncToClient();
+        }
     }
 
     public void createPortal(World world, Vec3d origin, Vec3d destination, Vec3d offset, Vec3d orientationW, Vec3d orientationH){

@@ -14,7 +14,6 @@ import net.minecraft.util.JsonHelper;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.InputStream;
 import java.net.URL;
 
 public class BalloonEntityModel extends EntityModel<BalloonEntity> {
@@ -45,7 +44,6 @@ public class BalloonEntityModel extends EntityModel<BalloonEntity> {
         ModelPartData modelPartData = modelData.getRoot();
         ModelPartData modelPartData2 = modelPartData.addChild("main", ModelPartBuilder.create(), ModelTransform.NONE);
 
-        System.out.println(System.getProperty("user.dir"));
         try {
             Identifier identifier = new Identifier("scicraft:models/entity/balloon.json");
             String fileName = "assets/" + identifier.getNamespace() + "/" + identifier.getPath();
@@ -66,17 +64,18 @@ public class BalloonEntityModel extends EntityModel<BalloonEntity> {
                 float tx = to.get(0).getAsFloat();
                 float ty = to.get(1).getAsFloat();
                 float tz = to.get(2).getAsFloat();
-                System.out.println("MODEL: " + fx + fy + fz + tx + ty + tz);
                 modelPartData2.addChild("bone" + i, ModelPartBuilder.create().uv(0, 0)
                         .cuboid(fx, fy, fz, tx - fx, ty - fy, tz - fz), ModelTransform.NONE);
             }
+            JsonArray sizes = jo.getAsJsonArray("texture_size");
+            return TexturedModelData.of(modelData, sizes.get(0).getAsInt(), sizes.get(1).getAsInt());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-//        modelPartData.addChild(EntityModelPartNames.CUBE, ModelPartBuilder.create().uv(0, 0)
-//                .cuboid(-6F, 12F, -6F, 12F, 12F, 12F),
-//                ModelTransform.pivot(0F, 0F, 0F));
-        return TexturedModelData.of(modelData, 32, 32);
+        modelPartData.addChild(EntityModelPartNames.CUBE, ModelPartBuilder.create().uv(0, 0)
+                .cuboid(-6F, 12F, -6F, 12F, 12F, 12F),
+                ModelTransform.pivot(0F, 0F, 0F));
+        return TexturedModelData.of(modelData, 64, 64);
     }
 }

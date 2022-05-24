@@ -17,5 +17,6 @@
   "item.scicraft.positron": "Positron",
   "item.scicraft.gluon": "Gluon",
   "item.scicraft.entropy_creeper_spawn_egg": "Entropy Creeperspawnei",
-  "entity.scicraft.entropy_creeper": "Entropy Creeper"
+  "entity.scicraft.entropy_creeper": "Entropy Creeper",
+  "entity.scicraft.balloon": "Ballon"
 }

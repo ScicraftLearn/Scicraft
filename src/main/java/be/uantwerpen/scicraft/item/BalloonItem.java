@@ -7,12 +7,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.TypeFilter;
 import net.minecraft.world.World;
+
+import java.util.UUID;
 
 public class BalloonItem extends Item {
     public BalloonItem(Item.Settings settings) {
@@ -23,7 +27,7 @@ public class BalloonItem extends Item {
         BalloonEntity balloon = Entities.BALLOON.create(world);
         balloon.refreshPositionAndAngles(entity.getX(), entity.getY(), entity.getZ(), 0.0F, 0.0F);
         world.spawnEntity(balloon);
-        balloon.setBallooned(entity);
+        balloon.setBallooned(entity, true);
         return balloon;
     }
 
@@ -31,17 +35,19 @@ public class BalloonItem extends Item {
     public void inventoryTick(ItemStack itemStack, World world, Entity entity, int slot, boolean selected) {
         super.inventoryTick(itemStack, world, entity, slot, selected);
         if (world.isClient()) {
-            if (entity instanceof  PlayerEntity) {
-                if (!((PlayerEntity) entity).getAbilities().creativeMode) {
-                    //System.out.println(Integer.toString(slot));
-                    if ((selected || slot==0) && !((PlayerEntity) entity).getAbilities().allowFlying) {
-                        ((PlayerEntity) entity).getAbilities().allowFlying = true;
-                        ((ClientPlayerEntity) entity).sendAbilitiesUpdate();
-                        // TODO item takes damage
-                    } else if (!selected && slot!=0 && ((PlayerEntity) entity).getAbilities().allowFlying) {
-                        ((PlayerEntity) entity).getAbilities().allowFlying = false;
-                        ((PlayerEntity) entity).getAbilities().flying = false;
-                        ((ClientPlayerEntity) entity).sendAbilitiesUpdate();
+            if (entity instanceof PlayerEntity pe) {
+                if (!(pe.getAbilities().creativeMode)) {
+                    ItemStack offhand = pe.getInventory().getStack(PlayerInventory.OFF_HAND_SLOT);
+                    if(offhand.isItemEqual(itemStack)) {
+                        if(!offhand.isEmpty() && offhand.getItem() instanceof BalloonItem) {
+                            pe.getAbilities().allowFlying = true;
+                            ((ClientPlayerEntity) entity).sendAbilitiesUpdate();
+                            // TODO item takes damage
+                        } else {
+                            pe.getAbilities().allowFlying = false;
+                            pe.getAbilities().flying = false;
+                            ((ClientPlayerEntity) entity).sendAbilitiesUpdate();
+                        }
                     }
                 }
             }
@@ -53,11 +59,23 @@ public class BalloonItem extends Item {
         if(! (entity instanceof PlayerEntity)) {
             World world = user.getWorld();
             if(!world.isClient) {
-                summon(world, entity);
-                stack.decrement(1);
+                LivingEntity target = null;
+                for(UUID id: BalloonEntity.balloons) {
+                    target = ((BalloonEntity) ((ServerWorld) world).getEntity(id)).getBallooned();
+                    if (target != null && target == entity) {
+                        break;
+                    }
+                    target = null;
+                }
+                if(target == null) {
+                    summon(world, entity);
+                    stack.decrement(1);
+                }
             }
             return ActionResult.success(world.isClient);
         }
         return ActionResult.PASS;
     }
+
+    // TODO: connect to fence? => see LeadItem
 }

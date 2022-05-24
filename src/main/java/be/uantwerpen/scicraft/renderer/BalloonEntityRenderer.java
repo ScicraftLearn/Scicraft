@@ -26,7 +26,7 @@ public class BalloonEntityRenderer extends MobEntityRenderer<BalloonEntity, Ball
     }
 
     public void render(BalloonEntity mobEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
-        Entity entity = BalloonEntity.mapping.get(mobEntity);
+        Entity entity = mobEntity.getBallooned();
         if (entity != null) {
             this.renderLeash(mobEntity, g, matrixStack, vertexConsumerProvider, entity);
         }

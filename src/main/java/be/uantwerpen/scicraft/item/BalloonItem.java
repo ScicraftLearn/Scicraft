@@ -61,9 +61,13 @@ public class BalloonItem extends Item {
             if(!world.isClient) {
                 LivingEntity target = null;
                 for(UUID id: BalloonEntity.balloons) {
-                    target = ((BalloonEntity) ((ServerWorld) world).getEntity(id)).getBallooned();
-                    if (target != null && target == entity) {
-                        break;
+                    // TODO: maybe this causes the rope issue?
+                    BalloonEntity balloon = ((BalloonEntity) ((ServerWorld) world).getEntity(id));
+                    if(balloon != null) {
+                        target = balloon.getBallooned();
+                        if (target != null && target == entity) {
+                            break;
+                        }
                     }
                     target = null;
                 }

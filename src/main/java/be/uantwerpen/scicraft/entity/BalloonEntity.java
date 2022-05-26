@@ -35,7 +35,7 @@ public class BalloonEntity extends MobEntity {
     }
 
     public Vec3d getLeashOffset() {
-        return new Vec3d(0.0D, (double)(0.5F * this.getStandingEyeHeight()), (double)(this.getWidth() * 0.2F));
+        return new Vec3d(0.0D, (double)(0.15F * this.getHeight()), 0.01D);
     }
 
     public LivingEntity getBallooned() {

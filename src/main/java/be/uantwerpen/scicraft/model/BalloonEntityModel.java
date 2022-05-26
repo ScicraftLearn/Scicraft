@@ -18,10 +18,10 @@ import java.net.URL;
 
 public class BalloonEntityModel extends EntityModel<BalloonEntity> {
 
-    private final ModelPart base;
+    private final ModelPart bb_main;
 
     public BalloonEntityModel(ModelPart root) {
-        this.base = root.getChild("main");
+        this.bb_main = root.getChild("main");
     }
 
     @Override
@@ -33,7 +33,7 @@ public class BalloonEntityModel extends EntityModel<BalloonEntity> {
     @Override
     public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay,
                        float red, float green, float blue, float alpha) {
-        ImmutableList.of(this.base).forEach((modelRenderer) -> {
+        ImmutableList.of(this.bb_main).forEach((modelRenderer) -> {
             modelRenderer.render(matrices, vertices, light, overlay, red, green, blue, alpha);
         });
     }
@@ -44,37 +44,21 @@ public class BalloonEntityModel extends EntityModel<BalloonEntity> {
         ModelPartData modelPartData = modelData.getRoot();
         ModelPartData modelPartData2 = modelPartData.addChild("main", ModelPartBuilder.create(), ModelTransform.NONE);
 
-        try {
-            Identifier identifier = new Identifier("scicraft:models/entity/balloon.json");
-            String fileName = "assets/" + identifier.getNamespace() + "/" + identifier.getPath();
 
-            ClassLoader classLoader = identifier.getClass().getClassLoader();
-            URL resource = classLoader.getResource(fileName);
-            FileReader fileReader = new FileReader(resource.getPath());
-
-            JsonObject jo = JsonHelper.deserialize(fileReader);
-            JsonArray elements = jo.getAsJsonArray("elements");
-            for(int i = 0; i < elements.size(); ++i) {
-                JsonObject bone = elements.get(i).getAsJsonObject();
-                JsonArray from = bone.get("from").getAsJsonArray();
-                JsonArray to = bone.get("to").getAsJsonArray();
-                float fx = from.get(0).getAsFloat();
-                float fy = from.get(1).getAsFloat();
-                float fz = from.get(2).getAsFloat();
-                float tx = to.get(0).getAsFloat();
-                float ty = to.get(1).getAsFloat();
-                float tz = to.get(2).getAsFloat();
-                modelPartData2.addChild("bone" + i, ModelPartBuilder.create().uv(0, 0)
-                        .cuboid(fx, fy, fz, tx - fx, ty - fy, tz - fz), ModelTransform.NONE);
-            }
-            JsonArray sizes = jo.getAsJsonArray("texture_size");
-            return TexturedModelData.of(modelData, sizes.get(0).getAsInt(), sizes.get(1).getAsInt());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        modelPartData.addChild(EntityModelPartNames.CUBE, ModelPartBuilder.create().uv(0, 0)
-                .cuboid(-6F, 12F, -6F, 12F, 12F, 12F),
+//        modelPartData2.addChild("bone0", ModelPartBuilder.create().uv(0, 0)
+//                .cuboid(-1.0F, 20.0F, -1.0F, 2.0F, 0.0F, 2.0F),
+//                ModelTransform.pivot(0F, 0F, 0F));
+        modelPartData2.addChild("bone1", ModelPartBuilder.create().uv(0, 2)
+                        .cuboid(-0.5F, 23.0F, -0.5F, 1.0F, 1.0F, 1.0F),
+                ModelTransform.pivot(0F, 0F, 0F));
+        modelPartData2.addChild("bone2", ModelPartBuilder.create().uv(0, 31)
+                        .cuboid(-2.0F, 21, -2.0F, 4.0F, 2.0F, 4.0F),
+                ModelTransform.pivot(0F, 0F, 0F));
+        modelPartData2.addChild("bone3", ModelPartBuilder.create().uv(0, 20)
+                        .cuboid(-4.0F, 8.0F, -4.0F, 8.0F, 13.0F, 8.0F),
+                ModelTransform.pivot(0F, 0F, 0F));
+        modelPartData2.addChild("bone4", ModelPartBuilder.create().uv(0, 0)
+                        .cuboid(-6.0F, 10.0F, -6.0F, 12.0F, 8.0F, 12.0F),
                 ModelTransform.pivot(0F, 0F, 0F));
         return TexturedModelData.of(modelData, 64, 64);
     }

@@ -3,35 +3,42 @@ package be.uantwerpen.scicraft.entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.packet.s2c.play.EntityAttachS2CPacket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class BalloonEntity extends MobEntity {
     private static final double MAX_DISTANCE = 2.0;
-    public static List<UUID> balloons = new ArrayList<>();
+    public static Set<UUID> balloons = new HashSet<>();
 
     private boolean liftoff = false;
     private int ballooned_id = 0;
     private LivingEntity ballooned = null;
     private UUID ballooned_uuid = null;
     private boolean helium = true;
+    private float rotationY;
 
     public BalloonEntity(EntityType<? extends MobEntity> entityType, World world) {
         super(entityType, world);
+        rotationY = getRandom().nextFloat() * 360.0F;
         setHealth(1.0f);
         inanimate = true;
         setNoGravity(true);
+        // TODO: For some reason, it allows multiple balloons after relogging
         balloons.add(getUuid());
+    }
+
+    public float getRotationY() {
+        return rotationY;
     }
 
     public Vec3d getLeashOffset() {
@@ -54,19 +61,22 @@ public class BalloonEntity extends MobEntity {
     public void unsetBallooned(boolean sendPacket) {
         ballooned = null;
         ballooned_id = 0;
-        if (!this.world.isClient && sendPacket && this.world instanceof ServerWorld) {
-            ((ServerWorld)this.world).getChunkManager().sendToOtherNearbyPlayers(this, new EntityAttachS2CPacket(this, (Entity)null));
-        }
+        detachLeash(sendPacket, false);
         discard();
+    }
+
+    @Override
+    public void onDeath(DamageSource source) {
+        detachLeash(true, false);
+        balloons.remove(getUuid());
+        super.onDeath(source);
     }
 
     public void setBallooned(LivingEntity target, boolean sendUpdate) {
         ballooned_id = target.getId();
         ballooned_uuid = target.getUuid();
         ballooned = target;
-        if (!world.isClient && sendUpdate && world instanceof ServerWorld) {
-            ((ServerWorld)this.world).getChunkManager().sendToOtherNearbyPlayers(this, new EntityAttachS2CPacket(this, ballooned));
-        }
+        attachLeash((Entity) target, sendUpdate);
     }
 
     public void setHelium(boolean new_value) {
@@ -88,8 +98,9 @@ public class BalloonEntity extends MobEntity {
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
         if (nbt.contains("Ballooned")) {
-            ballooned_uuid = nbt.getUuid("Ballooned");
             if(world instanceof ServerWorld) {
+                ballooned_uuid = nbt.getUuid("Ballooned");
+                System.out.println("NBT: " + getUuid());
                 Entity entity = ((ServerWorld)this.world).getEntity(ballooned_uuid);
                 if(entity != null) {
                     setBallooned((LivingEntity) entity, true);
@@ -110,6 +121,7 @@ public class BalloonEntity extends MobEntity {
     @Override
     public void tick() {
         super.tick();
+        rotationY += 0.01F;
         addStatusEffect(new StatusEffectInstance(StatusEffects.LEVITATION, 10, 3, false, false));
         LivingEntity target = getBallooned();
         if(target != null) {
@@ -122,8 +134,12 @@ public class BalloonEntity extends MobEntity {
             Vec3d tpos = target.getPos();
             double distance = tpos.distanceTo(mpos);
             if(distance >= MAX_DISTANCE) {
-                Vec3d direction = new Vec3d(tpos.x - mpos.x, tpos.y - mpos.y, tpos.z - mpos.z).normalize();
-                setVelocity(direction.multiply(0.1));
+                double d = (tpos.getX() - this.getX()) / (double)distance;
+                double e = (tpos.getY() - this.getY()) / (double)distance;
+                double g = (tpos.getZ() - this.getZ()) / (double)distance;
+                this.setVelocity(this.getVelocity().add(Math.copySign(d * d * 0.4D, d), Math.copySign(e * e * 0.4D, e), Math.copySign(g * g * 0.4D, g)));
+//                Vec3d direction = new Vec3d(tpos.x - mpos.x, tpos.y - mpos.y, tpos.z - mpos.z).normalize();
+//                setVelocity(direction.multiply(0.1));
                 liftoff = true;
             }
             if(liftoff && helium) {

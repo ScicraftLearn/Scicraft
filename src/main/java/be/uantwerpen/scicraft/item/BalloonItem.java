@@ -56,12 +56,11 @@ public class BalloonItem extends Item {
 
     @Override
     public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
-        if(! (entity instanceof PlayerEntity)) {
+        if(!(entity instanceof PlayerEntity) && !(entity instanceof BalloonEntity)) {
             World world = user.getWorld();
             if(!world.isClient) {
                 LivingEntity target = null;
                 for(UUID id: BalloonEntity.balloons) {
-                    // TODO: maybe this causes the rope issue?
                     BalloonEntity balloon = ((BalloonEntity) ((ServerWorld) world).getEntity(id));
                     if(balloon != null) {
                         target = balloon.getBallooned();

@@ -3,6 +3,7 @@ package be.uantwerpen.scicraft.lewisrecipes;
 import be.uantwerpen.scicraft.Scicraft;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
@@ -15,24 +16,29 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-public class MoleculeRecipe implements Recipe<CraftingInventory> {
-    private final ItemStack outputStack;
+
+public class MoleculeRecipe implements Recipe<LewisCraftingGrid> {
+
+    private final Molecule molecule;
     private final Identifier id;
+    private final JsonObject json;
 
-    public MoleculeRecipe(ItemStack outputStack, Identifier id) {
-        this.outputStack = outputStack;
+    public MoleculeRecipe(Molecule molecule, Identifier id, JsonObject json) {
+        this.molecule = molecule;
         this.id = id;
-        Scicraft.LOGGER.debug("Recipe made: " + id.toString());
+        this.json = json;
+        Scicraft.LOGGER.info("Recipe made: " + id.toString());
+        Scicraft.LOGGER.info(molecule.getStructure().toCanonical());
     }
 
     @Override
-    public boolean matches(CraftingInventory inventory, World world) {
-        return false;
+    public boolean matches(LewisCraftingGrid inventory, World world) {
+        return inventory.getPartialMolecule() == molecule;
     }
 
     @Override
-    public ItemStack craft(CraftingInventory inventory) {
-        return getOutput().copy();
+    public ItemStack craft(LewisCraftingGrid inventory) {
+        return getOutput();
     }
 
     @Override
@@ -42,13 +48,16 @@ public class MoleculeRecipe implements Recipe<CraftingInventory> {
 
     @Override
     public ItemStack getOutput() {
-        // Do not modify the output as this is a direct reference not a copy. Use craft instead if you want a copy.
-        return outputStack;
+        return new ItemStack(molecule.getItem());
     }
 
     @Override
     public Identifier getId() {
         return id;
+    }
+
+    public JsonObject getJson(){
+        return json;
     }
 
     @Override
@@ -78,29 +87,33 @@ public class MoleculeRecipe implements Recipe<CraftingInventory> {
         public MoleculeRecipe read(Identifier id, JsonObject json) {
             MoleculeRecipeJsonFormat recipeJson = new Gson().fromJson(json, MoleculeRecipeJsonFormat.class);
             // Validate all fields are there
-            if (recipeJson.result == null) {
-                throw new JsonSyntaxException("A required attribute is missing!");
-            }
-            // We'll allow to not specify the output, and default it to 1.
-            if (recipeJson.result.count == 0) recipeJson.result.count = 1;
+            if (recipeJson.result == null)
+                throw new JsonSyntaxException("Attribute 'result' is missing");
+            if (recipeJson.structure == null)
+                throw new JsonSyntaxException("Attribute 'structure' is missing");
 
             Item outputItem = Registry.ITEM.getOrEmpty(new Identifier(recipeJson.result.item))
                     // Validate the entered item actually exists
                     .orElseThrow(() -> new JsonSyntaxException("No such item " + recipeJson.result.item));
-            ItemStack output = new ItemStack(outputItem, recipeJson.result.count);
 
-            return new MoleculeRecipe(output, id);
+            Molecule molecule = new Molecule(recipeJson.structure.get(), outputItem);
+            return new MoleculeRecipe(molecule, id, json);
         }
 
         @Override
         public MoleculeRecipe read(Identifier id, PacketByteBuf buf) {
-            ItemStack output = buf.readItemStack();
-            return new MoleculeRecipe(output, id);
+            // TODO: untested code
+            // Writing graph optimized to bytes is hard -> just send json over.
+            String jsonStr = buf.readString();
+            JsonObject json = JsonParser.parseString(jsonStr).getAsJsonObject();
+            return read(id, json);
         }
 
         @Override
         public void write(PacketByteBuf buf, MoleculeRecipe recipe) {
-            buf.writeItemStack(recipe.getOutput());
+            // Writing graph optimized to bytes is hard -> just send json over.
+            Scicraft.LOGGER.info(recipe.getJson().toString());
+            buf.writeString(recipe.getJson().toString());
         }
     }
 

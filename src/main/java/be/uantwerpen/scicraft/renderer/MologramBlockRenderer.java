@@ -49,8 +49,6 @@ public class MologramBlockRenderer implements BlockEntityRenderer<MologramBlockE
         float xx = pos.getX();
         float yy = pos.getY();
         float zz = pos.getZ();
-        //Renderer3d.renderFadingBlock(Color.BLACK, Color.BLUE,new Vec3d(xx+1,yy+1,zz+1), new Vec3d(1,1,1), 1000);
-        //Renderer3d.renderBlockWithEdges(new Vec3d(xx+1,yy+1,zz+1), new Vec3d(1,1,1), Color.BLACK, Color.BLUE).drawAllWithoutVbo(matrices);
     }
     private void rendersphere(double r, int lats, int longs, BlockPos pos, MatrixStack matrices) {
 
@@ -58,18 +56,14 @@ public class MologramBlockRenderer implements BlockEntityRenderer<MologramBlockE
     }
     public static RenderActionBatch sphere_vertices(BlockPos pos){
         float[] fillColor = Colors.intArrayToFloatArray(Colors.RGBAIntToRGBA(Color.BLACK.toRGBAInt()));
-        float[] outlineColor = Colors.intArrayToFloatArray(Colors.RGBAIntToRGBA(Color.BLACK.toRGBAInt()));
 
-        float x1 = (float) ((float) pos.getX()+1);
+        float x1 = ((float) pos.getX()+1);
         float y1 = (float) pos.getY()+3;
-        float z1 = (float) ((float) pos.getZ()+1);
-        float x2 = (float) x1+1;
-        float y2 = (float) y1+1;
-        float z2 = (float) z1+1;
+        float z1 = ((float) pos.getZ()+1);
 
         //        Matrix4f matrix = stack.peek().getPositionMatrix();
         BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
         int i,j;
         for(i=0; i<10; i++){
             float lat0 = (float) (MathHelper.PI * (-0.5 + (float)(i-1)/10));
@@ -83,11 +77,17 @@ public class MologramBlockRenderer implements BlockEntityRenderer<MologramBlockE
                 float lng = 2 * MathHelper.PI * (float) (j-1)/10;
                 float x = MathHelper.cos(lng);
                 float y = MathHelper.sin(lng);
+                float lng2 = 2 * MathHelper.PI * (float) j/10;
+                float x2 = MathHelper.cos(lng2);
+                float y2 = MathHelper.sin(lng2);
 
                 buffer.vertex(0.25*x*zr0+x1, 0.25*y*zr0+y1, 0.25*z0+z1).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
                 buffer.vertex(0.25*x*zr1+x1, 0.25*y*zr1+y1, 0.25*z+z1).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
-                //buffer.vertex(x*zr0, y*zr0, z).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
-                //buffer.vertex(x*zr0, y*zr0, z).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
+                buffer.vertex(0.25*x2*zr0+x1, 0.25*y2*zr0+y1, 0.25*z0+z1).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
+
+                buffer.vertex(0.25*x*zr1+x1, 0.25*y*zr1+y1, 0.25*z+z1).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
+                buffer.vertex(0.25*x2*zr0+x1, 0.25*y2*zr0+y1, 0.25*z0+z1).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
+                buffer.vertex(0.25*x2*zr1+x1, 0.25*y2*zr1+y1, 0.25*z+z1).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
             }
         }
 

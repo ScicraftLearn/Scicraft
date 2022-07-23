@@ -3,6 +3,8 @@ package be.uantwerpen.scicraft;
 import be.uantwerpen.scicraft.block.Blocks;
 import be.uantwerpen.scicraft.block.entity.AnimatedChargedBlockEntity;
 import be.uantwerpen.scicraft.block.entity.BlockEntities;
+import be.uantwerpen.scicraft.client.EventHandler;
+import be.uantwerpen.scicraft.event.Events;
 import be.uantwerpen.scicraft.renderer.MologramBlockRenderer;
 import be.uantwerpen.scicraft.entity.Entities;
 import be.uantwerpen.scicraft.gui.LewisScreen;
@@ -83,7 +85,7 @@ public class ScicraftClient implements ClientModInitializer {
 
         // Register rendering lewis crafting table inventory
         HandledScreens.register(Screens.LEWIS_SCREEN_HANDLER, LewisScreen::new);
-
+        Events.registerEventHandlerClass(new EventHandler());
 //        BlockRenderLayerMap.INSTANCE.putBlock(Blocks.LEWIS_BLOCK, RenderLayer.getTranslucent());
 
         // Gas

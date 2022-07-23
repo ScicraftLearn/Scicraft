@@ -9,7 +9,8 @@
     "CreeperEntityMixin",
     "ExplosionAccessor",
     "FireMixin",
-    "ThrownEntityMixin"
+    "ThrownEntityMixin",
+    "BlockEntityRenderDispatcherMixin"
   ],
   "client": []
 }

@@ -4,13 +4,12 @@ import be.uantwerpen.scicraft.Scicraft;
 import be.uantwerpen.scicraft.block.MologramBlock;
 import be.uantwerpen.scicraft.block.entity.MologramBlockEntity;
 import be.uantwerpen.scicraft.particle.Particles;
+import be.uantwerpen.scicraft.renderer.color.Color;
+import be.uantwerpen.scicraft.renderer.color.Colors;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.model.json.ModelTransformation;
@@ -23,8 +22,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.ObjectUtils;
-
 import java.util.Random;
+import be.uantwerpen.scicraft.renderer.Renderer3d;
 
 public class MologramBlockRenderer implements BlockEntityRenderer<MologramBlockEntity> {
 
@@ -43,9 +42,58 @@ public class MologramBlockRenderer implements BlockEntityRenderer<MologramBlockE
 
         BlockPos pos = entity.getPos();
         // render beam
-        renderBeam(world, pos);
+        //renderBeam(world, pos);
         // Render stack inside the block
         renderInsideOfBlock(matrices, vertexConsumers, light, overlay);
+        rendersphere(1,10,10, pos, matrices);
+        float xx = pos.getX();
+        float yy = pos.getY();
+        float zz = pos.getZ();
+        //Renderer3d.renderFadingBlock(Color.BLACK, Color.BLUE,new Vec3d(xx+1,yy+1,zz+1), new Vec3d(1,1,1), 1000);
+        //Renderer3d.renderBlockWithEdges(new Vec3d(xx+1,yy+1,zz+1), new Vec3d(1,1,1), Color.BLACK, Color.BLUE).drawAllWithoutVbo(matrices);
+    }
+    private void rendersphere(double r, int lats, int longs, BlockPos pos, MatrixStack matrices) {
+
+        sphere_vertices(pos).drawAllWithoutVbo(matrices);
+    }
+    public static RenderActionBatch sphere_vertices(BlockPos pos){
+        float[] fillColor = Colors.intArrayToFloatArray(Colors.RGBAIntToRGBA(Color.BLACK.toRGBAInt()));
+        float[] outlineColor = Colors.intArrayToFloatArray(Colors.RGBAIntToRGBA(Color.BLACK.toRGBAInt()));
+
+        float x1 = (float) ((float) pos.getX()+1);
+        float y1 = (float) pos.getY()+3;
+        float z1 = (float) ((float) pos.getZ()+1);
+        float x2 = (float) x1+1;
+        float y2 = (float) y1+1;
+        float z2 = (float) z1+1;
+
+        //        Matrix4f matrix = stack.peek().getPositionMatrix();
+        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        int i,j;
+        for(i=0; i<10; i++){
+            float lat0 = (float) (MathHelper.PI * (-0.5 + (float)(i-1)/10));
+            float z0 = MathHelper.sin(lat0);
+            float zr0 = MathHelper.cos(lat0);
+            float lat1 = (float) (MathHelper.PI * (-0.5 + (float)(i)/10));
+            float z = MathHelper.sin(lat1);
+            float zr1 = MathHelper.cos(lat1);
+
+            for(j=0; j<10; j++){
+                float lng = 2 * MathHelper.PI * (float) (j-1)/10;
+                float x = MathHelper.cos(lng);
+                float y = MathHelper.sin(lng);
+
+                buffer.vertex(0.25*x*zr0+x1, 0.25*y*zr0+y1, 0.25*z0+z1).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
+                buffer.vertex(0.25*x*zr1+x1, 0.25*y*zr1+y1, 0.25*z+z1).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
+                //buffer.vertex(x*zr0, y*zr0, z).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
+                //buffer.vertex(x*zr0, y*zr0, z).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
+            }
+        }
+
+        RenderAction action1 = new RenderAction(buffer.end(), GameRenderer.getPositionColorShader());
+
+        return new RenderActionBatch(action1);
     }
     private static void renderBeam(World world, BlockPos pos) {
         renderBeamAsParticle(world, pos);

@@ -3,11 +3,11 @@
   "structure":
   {
     "atoms": [
-      {"key":  "C1", "atom":  "C"},
-      {"key":  "H1", "atom":  "H"},
-      {"key":  "H2", "atom":  "H"},
-      {"key":  "H3", "atom":  "H"},
-      {"key":  "H4", "atom":  "H"}
+      {"key":  "C1", "atom":  "C", "coords": [0.00, 0.00, 0.00]},
+      {"key":  "H1", "atom":  "H", "coords": [0.00, 1.09, 0.00]},
+      {"key":  "H2", "atom":  "H", "coords": [1.03, -0.36, 0.00]},
+      {"key":  "H3", "atom":  "H", "coords": [-0.52, -0.36, -0.89]},
+      {"key":  "H4", "atom":  "H", "coords": [-0.52, -0.36, 0.89]}
     ],
     "bonds": [
       {"from": "H1", "to": "C1", "bondOrder": 1},

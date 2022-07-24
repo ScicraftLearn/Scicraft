@@ -28,10 +28,13 @@ public class RendererUtils {
      * <p>Sets up rendering and resets everything that should be reset</p>
      */
     public static void setupRender() {
-        RenderSystem.disableCull();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+        //RenderSystem.disableCull();
+//        RenderSystem.enableBlend();
+        //RenderSystem.defaultBlendFunc();
+//        RenderSystem.getShader()
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.enableDepthTest();
+        RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
     /**
@@ -39,8 +42,9 @@ public class RendererUtils {
      */
     public static void endRender() {
         RenderSystem.disableBlend();
-        RenderSystem.enableCull();
+        //RenderSystem.enableCull();
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        RenderSystem.disableDepthTest();
     }
 
     /**

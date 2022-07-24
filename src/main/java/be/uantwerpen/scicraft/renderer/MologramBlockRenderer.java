@@ -55,7 +55,7 @@ public class MologramBlockRenderer implements BlockEntityRenderer<MologramBlockE
         sphere_vertices(pos).drawAllWithoutVbo(matrices);
     }
     public static RenderActionBatch sphere_vertices(BlockPos pos){
-        float[] fillColor = Colors.intArrayToFloatArray(Colors.RGBAIntToRGBA(Color.BLACK.toRGBAInt()));
+        float[] fillColor = Colors.intArrayToFloatArray(Colors.RGBAIntToRGBA(Color.RED.toRGBAInt()));
 
         float x1 = ((float) pos.getX()+1);
         float y1 = (float) pos.getY()+3;
@@ -65,7 +65,7 @@ public class MologramBlockRenderer implements BlockEntityRenderer<MologramBlockE
         BufferBuilder buffer = Tessellator.getInstance().getBuffer();
         buffer.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
         int i,j;
-        for(i=0; i<10; i++){
+        for(i=1; i<11; i++){
             float lat0 = (float) (MathHelper.PI * (-0.5 + (float)(i-1)/10));
             float z0 = MathHelper.sin(lat0);
             float zr0 = MathHelper.cos(lat0);
@@ -73,7 +73,7 @@ public class MologramBlockRenderer implements BlockEntityRenderer<MologramBlockE
             float z = MathHelper.sin(lat1);
             float zr1 = MathHelper.cos(lat1);
 
-            for(j=0; j<10; j++){
+            for(j=1; j<11; j++){
                 float lng = 2 * MathHelper.PI * (float) (j-1)/10;
                 float x = MathHelper.cos(lng);
                 float y = MathHelper.sin(lng);
@@ -85,13 +85,13 @@ public class MologramBlockRenderer implements BlockEntityRenderer<MologramBlockE
                 buffer.vertex(0.25*x*zr1+x1, 0.25*y*zr1+y1, 0.25*z+z1).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
                 buffer.vertex(0.25*x2*zr0+x1, 0.25*y2*zr0+y1, 0.25*z0+z1).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
 
-                buffer.vertex(0.25*x*zr1+x1, 0.25*y*zr1+y1, 0.25*z+z1).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
                 buffer.vertex(0.25*x2*zr0+x1, 0.25*y2*zr0+y1, 0.25*z0+z1).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
+                buffer.vertex(0.25*x*zr1+x1, 0.25*y*zr1+y1, 0.25*z+z1).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
                 buffer.vertex(0.25*x2*zr1+x1, 0.25*y2*zr1+y1, 0.25*z+z1).color(fillColor[0], fillColor[1], fillColor[2], fillColor[3]).next();
             }
         }
 
-        RenderAction action1 = new RenderAction(buffer.end(), GameRenderer.getPositionColorShader());
+        RenderAction action1 = new RenderAction(buffer.end(), GameRenderer.getPositionColorLightmapShader());
 
         return new RenderActionBatch(action1);
     }

@@ -8,6 +8,8 @@ import net.minecraft.particle.DefaultParticleType;
 
 public class HologramParticle extends SpriteBillboardParticle {
 
+
+    /*Constructor that sets all the variables of the particle effect*/
     protected HologramParticle(ClientWorld level, double xCoord, double yCoord, double zCoord,
                               SpriteProvider spriteSet, double xd, double yd, double zd) {
         super(level, xCoord, yCoord, zCoord, xd, yd, zd);
@@ -25,15 +27,20 @@ public class HologramParticle extends SpriteBillboardParticle {
         fadeOut();
     }
 
+    //linear function so the particles fadeout over the requested time (age)
     private void fadeOut() {
         this.alpha = (-(1/(float)maxAge) * age + 1);
     }
 
+
+    //sets an translucent effect over the sprite that is used as particle
     @Override
     public ParticleTextureSheet getType() {
         return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT;
     }
 
+
+    //class that creates the particle so that it can be registered
     @Environment(EnvType.CLIENT)
     public static class Factory implements ParticleFactory<DefaultParticleType> {
         private final SpriteProvider sprites;
